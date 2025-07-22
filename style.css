@@ -393,7 +393,7 @@ body {
     background-color: #f8f8f8;
     font-weight: 600;
     color: var(--primary-color);
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 .pos-row.header-row .pos-cell:first-child {
