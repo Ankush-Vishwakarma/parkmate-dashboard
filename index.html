@@ -79,26 +79,8 @@
           </div>
         </section>
 
-        <section class="overview-section">
-          <h2>Overview Summary</h2>
-          <div class="overview-table-container">
-            <!-- <table class="overview-table">
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th></th> <th>Today</th>
-                  <th>Yesterday</th>
-                  <th>Last 7 Days</th>
-                  <th>All Time</th>
-                </tr>
-              </thead>
-              <tbody id="overview-table-body">
-                <!-- <tr><td colspan="6" class="no-results">Loading Overview Data...</td></tr> -->
-              </tbody>
-            </table> 
-          </div>
-        </section>
-        <hr/>
+      
+        <hr />
         <section class="fastag-summary-section">
           <h2>Fastag Summary</h2>
 
@@ -163,7 +145,7 @@
 
         <div id="lightbox" class="lightbox">
           <span class="close-button">&times;</span>
-          <img class="lightbox-content" id="lightbox-img">
+          <img class="lightbox-content" id="lightbox-img" />
           <div id="caption"></div>
         </div>
 
@@ -246,52 +228,27 @@
         </section>
       </main>
 
+      
       <main
         class="activities-section"
         id="activities-section"
         style="display: none"
       >
-        <div class="activities-header">
-          <h2>Activities (0)</h2>
-          <p>
-            Showing Activities of
-            <span id="activities-date">10th April 2024</span>
-          </p>
+       <div class="activity-filters">
+        <div class="filter-group">
+            <label for="activity-date-filter">Date:</label>
+            <input type="date" id="activity-date-filter" class="form-control">
         </div>
-
-        <div class="activities-controls">
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Search by name or phone..."
-          />
-          <input type="date" id="search-date" />
-          <button class="search-btn" id="search-button">Search</button>
+        <div class="filter-group search-group">
+            <input type="text" id="activity-search-input" class="form-control" placeholder="Search Vehicle #, Project, etc.">
+            <button id="activity-search-button" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
         </div>
-
-        <table class="activities-table">
-          <thead>
-            <tr>
-              <th>Info</th>
-              <th>Vehicle Number</th>
-              <th>Entry Info</th>
-              <th>Exit Info</th>
-              <th>Payment Info</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="5" class="no-results">No results.</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="pagination">
-          <span>Page 1 of 1</span>
-          <button disabled>Previous</button>
-          <button disabled>Next</button>
+    </div>
+    <div id="activity-loading-message" class="loading-message" style="display: none;">Loading activity data...</div>
+    <div id="activity-error-message" class="error-text"></div>
+    <div id="activity-data-container" class="data-container">
         </div>
-      </main>
+        </main>
 
       <main class="pos-actions" id="pos-actions-section" style="display: none">
         <div class="pos-card-container" id="pos-card-container"></div>

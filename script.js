@@ -24,13 +24,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const tagSection = document.getElementById("tag-section");
   const reportsSection = document.getElementById("reports-section");
 
-  const searchInput = document.getElementById("search-input");
-  const searchBtn = document.getElementById("search-button");
-  const tbody = document.querySelector(".activities-table tbody");
+  const activityDateFilter = document.getElementById("activity-date-filter");
+  const activitySearchInput = document.getElementById("activity-search-input");
+  const activitySearchButton = document.getElementById(
+    "activity-search-button"
+  );
+
   const passesTableBody = document.getElementById("passes-table-body");
   const passesSearchInput = document.getElementById("passes-search-input");
   const hardware__TableBody = document.getElementById("hardware-table-body");
-  const overviewTableBody = document.getElementById("overview-table-body"); 
 
   let allUsers = [];
   let allPassesData = [];
@@ -47,12 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  navItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      setActiveLink(this);
-    });
-  });
-
   function showSection(sectionElement) {
     [
       welcomeMessageContent,
@@ -63,120 +59,408 @@ document.addEventListener("DOMContentLoaded", function () {
       tagSection,
       reportsSection,
     ].forEach((section) => (section.style.display = "none"));
+
     sectionElement.style.display = "block";
+
+    localStorage.setItem("lastActiveSection", sectionElement.id);
+
+    if (sectionElement === activitiesSection) {
+      fetchAndDisplayActivityData();
+    } else if (sectionElement === hardwareSection) {
+      populateHardwareTable();
+    } else if (sectionElement === passesSection) {
+      fetchPassesData();
+    } else if (sectionElement === reportsSection) {
+      loadReportsData();
+    }
   }
 
-  // ------- --------------------------Date pdate Logic--------------------------------
+  // --- -------------------Date Update Logic for Dashboard Header ---------------------------------------
   function updateCurrentDate() {
-      const today = new Date();
-      const options = { month: 'short', day: 'numeric', year: 'numeric' };
-      const formattedDate = today.toLocaleDateString('en-IN', options); // Using 'en-IN' for consistency
+    const today = new Date();
+    const options = { month: "short", day: "numeric", year: "numeric" };
+    const formattedDate = today.toLocaleDateString("en-IN", options);
 
-      const currentDateElement = document.getElementById("current-date");
-      if (currentDateElement) {
-          currentDateElement.textContent = formattedDate;
-      } else {
-          console.error("Error: Element with ID 'current-date' not found!");
-      }
+    const currentDateElement = document.getElementById("current-date");
+    if (currentDateElement) {
+      currentDateElement.textContent = formattedDate;
+    } else {
+      console.error("Error: Element with ID 'current-date' not found!");
+    }
   }
-  updateCurrentDate(); 
+  updateCurrentDate();
 
+  // --- Navigation Link Event Listeners ---
   dashboardLink.addEventListener("click", (e) => {
     e.preventDefault();
+    setActiveLink(dashboardLink.parentElement);
     showSection(dashboardContent);
-    
   });
 
   activitiesLink.addEventListener("click", (e) => {
     e.preventDefault();
+    setActiveLink(activitiesLink.parentElement);
     showSection(activitiesSection);
-    fetchActivities();
   });
 
   hardwareLink.addEventListener("click", function (e) {
     e.preventDefault();
+    setActiveLink(hardwareLink.parentElement);
     showSection(hardwareSection);
-    populateHardwareTable();
   });
 
   passesLink.addEventListener("click", (e) => {
     e.preventDefault();
+    setActiveLink(passesLink.parentElement);
     showSection(passesSection);
-    fetchPassesData();
   });
 
   tagsLink.addEventListener("click", (e) => {
     e.preventDefault();
+    setActiveLink(tagsLink.parentElement);
     showSection(tagSection);
   });
 
   reportsLink.addEventListener("click", (e) => {
     e.preventDefault();
+    setActiveLink(reportsLink.parentElement);
     showSection(reportsSection);
-    loadReportsData();
   });
 
-  // ------------------------------------ Overview Data ---------------------------------------------- ---
- 
+  // --- ----------------------------------Activity Filter ------------------------- ---
+  const today = new Date().toISOString().split("T")[0];
+  if (activityDateFilter) {
+    activityDateFilter.value = today;
+  }
 
+  if (activityDateFilter) {
+    activityDateFilter.addEventListener("change", () => {
+      console.log("Activity Date filter changed to:", activityDateFilter.value);
+      fetchAndDisplayActivityData();
+    });
+  }
 
+  if (activitySearchButton) {
+    activitySearchButton.addEventListener("click", () => {
+      console.log(
+        "Activity Search button clicked. Query:",
+        activitySearchInput.value
+      );
+      fetchAndDisplayActivityData();
+    });
+  }
 
+  if (activitySearchInput) {
+    activitySearchInput.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        console.log(
+          "Activity Enter key pressed. Query:",
+          activitySearchInput.value
+        );
+        fetchAndDisplayActivityData();
+      }
+    });
+  }
 
-  //----------------------------------- Pass Data ------------------------------------
+  const ACTIVITY_API_BASE_URL = "http://localhost:3001/api/activity-proxy";
 
-  function fetchActivities() {
-    tbody.innerHTML = `<tr><td colspan="5">Loading...</td></tr>`;
-    fetch("https://dummyjson.com/users?limit=100")
-      .then((res) => res.json())
-      .then((data) => {
-        allUsers = data.users;
-        renderTable(allUsers);
+  // ------------------------------------ Activities Data (Real API) with Filtering -----------------------------------
+  async function fetchAndDisplayActivityData() {
+    const selectedDate = activityDateFilter ? activityDateFilter.value : "";
+    const searchQuery = activitySearchInput
+      ? activitySearchInput.value.trim()
+      : "";
+
+    const params = new URLSearchParams();
+    if (selectedDate) {
+      params.append("date", selectedDate);
+    }
+    if (searchQuery) {
+      params.append("search", searchQuery);
+    }
+
+    const finalApiUrl = `${ACTIVITY_API_BASE_URL}?${params.toString()}`;
+
+    activitiesSection.innerHTML = `
+            <h2>Activity</h2>
+            <div class="activity-filters">
+                <div class="filter-group">
+                    <label for="activity-date-filter">Date:</label>
+                    <input type="date" id="activity-date-filter" class="form-control" value="${selectedDate}">
+                </div>
+                <div class="filter-group search-group">
+                    <input type="text" id="activity-search-input" class="form-control" placeholder="Search Vehicle #, Project, etc." value="${searchQuery}">
+                    <button id="activity-search-button" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+                </div>
+            </div>
+            <div id="activity-loading-message" class="loading-message">Loading activity data...</div>
+            <div id="activity-error-message" class="error-text"></div>
+            <div id="activity-data-container" class="data-container"></div>
+        `;
+
+    const newActivityDateFilter = document.getElementById(
+      "activity-date-filter"
+    );
+    const newActivitySearchInput = document.getElementById(
+      "activity-search-input"
+    );
+    const newActivitySearchButton = document.getElementById(
+      "activity-search-button"
+    );
+
+    if (newActivityDateFilter) {
+      newActivityDateFilter.addEventListener("change", () =>
+        fetchAndDisplayActivityData()
+      );
+    }
+    if (newActivitySearchButton) {
+      newActivitySearchButton.addEventListener("click", () =>
+        fetchAndDisplayActivityData()
+      );
+    }
+    if (newActivitySearchInput) {
+      newActivitySearchInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          fetchAndDisplayActivityData();
+        }
+      });
+    }
+
+    const loadingEl = document.getElementById("activity-loading-message");
+    const errorEl = document.getElementById("activity-error-message");
+    const dataContainerEl = document.getElementById("activity-data-container");
+
+    loadingEl.style.display = "block";
+    errorEl.textContent = "";
+    dataContainerEl.innerHTML = "";
+
+    try {
+      console.log("Attempting to fetch activity data from:", finalApiUrl);
+      const response = await fetch(finalApiUrl);
+      console.log("Fetch response received:", response);
+
+      if (!response.ok) {
+        let errorDetail = `HTTP error! Status: ${response.status} ${response.statusText}`;
+        try {
+          const errorJson = await response.json();
+          console.error("Error JSON from proxy:", errorJson);
+          if (errorJson && errorJson.detail) {
+            errorDetail += ` - API Message: ${errorJson.detail}`;
+          } else if (errorJson && errorJson.message) {
+            errorDetail += ` - Proxy Message: ${errorJson.message}`;
+          }
+        } catch (e) {
+          console.error("Could not parse error response as JSON:", e);
+          errorDetail += ` - Response not JSON or empty.`;
+        }
+        throw new Error(errorDetail);
+      }
+
+      const data = await response.json();
+      console.log("API Data Received for Activity:", data);
+
+      loadingEl.style.display = "none";
+
+      if (
+        data.results &&
+        Array.isArray(data.results) &&
+        data.results.length > 0
+      ) {
+        const table = document.createElement("table");
+        table.classList.add("activity-table");
+
+        const thead = document.createElement("thead");
+        thead.innerHTML = `
+                    <tr>
+                        <th>Vehicle #</th>
+                        <th>Project</th>
+                        <th>Category</th>
+                        <th>Event Type</th>
+                        <th>Entry Time</th>
+                        <th>Exit Time</th>
+                        <th>Mode</th>
+                        <th>Paid</th>
+                        <th>Amount</th>
+                        <th>Denial Reason</th>
+                    </tr>
+                `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        data.results.forEach((activity) => {
+          const row = document.createElement("tr");
+
+          const entryTime = activity.entry_time
+            ? new Date(activity.entry_time).toLocaleString()
+            : "N/A";
+          const exitTime = activity.exit_time
+            ? new Date(activity.exit_time).toLocaleString()
+            : "N/A";
+          const isPaid = activity.paid ? "Yes" : "No";
+          const amount = activity.amount !== null ? activity.amount : "N/A";
+
+          row.innerHTML = `
+                        <td data-label="Vehicle #">${
+                          activity.vehicle_number || "N/A"
+                        }</td>
+                        <td data-label="Project">${
+                          activity.project_name || "N/A"
+                        }</td>
+                        <td data-label="Category">${
+                          activity.category_name || "N/A"
+                        }</td>
+                        <td data-label="Event Type"><span class="event-type-${(
+                          activity.event_type || ""
+                        ).toLowerCase()}">${
+            activity.event_type || "N/A"
+          }</span></td>
+                        <td data-label="Entry Time">${entryTime}</td>
+                        <td data-label="Exit Time">${exitTime}</td>
+                        <td data-label="Mode">${
+                          activity.entry_mode || "N/A"
+                        }</td>
+                        <td data-label="Paid">${isPaid}</td>
+                        <td data-label="Amount">${amount}</td>
+                        <td data-label="Denial Reason">${
+                          activity.transaction_denial_reason || "N/A"
+                        }</td>
+                    `;
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        dataContainerEl.appendChild(table);
+        setupImageClickListeners(dataContainerEl);
+      } else {
+        dataContainerEl.innerHTML =
+          "<p>No activity records found for the applied filters or data format is unexpected.</p>";
+        console.warn(
+          "API Data for Activity does not contain 'results' array or it is empty:",
+          data
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching activity data via proxy:", error);
+      loadingEl.style.display = "none";
+      errorEl.textContent = `Failed to load activity data. Please ensure your proxy server is running and the API is accessible. Details: ${error.message}`;
+    }
+  }
+
+  // ------------------------------------ Reports Data-------------- ------------------------------------
+  function loadReportsData() {
+    const reportsTableBody = document.getElementById("reports-table-body");
+    reportsTableBody.innerHTML =
+      '<tr><td colspan="2">Loading reports...</td></tr>';
+
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(endDate.getDate() - 6);
+
+    const reportPromises = [];
+    const reportResults = {};
+
+    for (
+      let d = new Date(startDate);
+      d <= endDate;
+      d.setDate(d.getDate() + 1)
+    ) {
+      const currentDate = d.toISOString().split("T")[0];
+
+      const params = new URLSearchParams();
+      params.append("date", currentDate);
+
+      const apiUrl = `${ACTIVITY_API_BASE_URL}?${params.toString()}`;
+
+      reportPromises.push(
+        fetch(apiUrl)
+          .then((response) => {
+            if (!response.ok) {
+              console.error(
+                `Error fetching data for ${currentDate}: ${response.status} ${response.statusText}`
+              );
+              return { results: [] };
+            }
+            return response.json();
+          })
+          .then((data) => {
+            reportResults[currentDate] =
+              data.results && Array.isArray(data.results) ? data.results : [];
+          })
+          .catch((error) => {
+            console.error(
+              `Network error fetching reports for ${currentDate}:`,
+              error
+            );
+            reportResults[currentDate] = [];
+          })
+      );
+    }
+
+    Promise.all(reportPromises)
+      .then(() => {
+        reportsTableBody.innerHTML = "";
+
+        const finalReports = [];
+        const sortedDates = Object.keys(reportResults).sort();
+
+        sortedDates.forEach((date) => {
+          const activities = reportResults[date];
+          let entryCount = 0;
+
+          activities.forEach((activity) => {
+            if (
+              activity.event_type &&
+              typeof activity.event_type === "string" &&
+              activity.event_type.toLowerCase() === "entry"
+            ) {
+              entryCount++;
+            }
+          });
+
+          const displayDate = new Date(date).toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+
+          finalReports.push({
+            date: displayDate,
+            summary: `Total Entries: ${entryCount}`,
+          });
+        });
+
+        if (finalReports.length === 0) {
+          reportsTableBody.innerHTML =
+            '<tr><td colspan="2" class="no-results">No report data available for the selected period.</td></tr>';
+          return;
+        }
+
+        finalReports.forEach((report) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+                        <td>${report.date}</td>
+                        <td>${report.summary}</td>
+                    `;
+          reportsTableBody.appendChild(row);
+        });
       })
-      .catch(() => {
-        tbody.innerHTML = `<tr><td colspan="5">Error loading data.</td></tr>`;
+      .catch((error) => {
+        console.error("Error processing all reports:", error);
+        reportsTableBody.innerHTML =
+          '<tr><td colspan="2" class="error-text">Failed to load all reports.</td></tr>';
       });
   }
 
-  function renderTable(data) {
-    if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5">No results found.</td></tr>`;
-      return;
-    }
-
-    let rows = "";
-    data.forEach((user) => {
-      rows += `
-                <tr>
-                    <td>${user.id}</td>
-                    <td>${user.firstName} ${user.lastName}</td>
-                    <td>${user.gender}</td>
-                    <td>${user.email}</td>
-                    <td>${user.phone}</td>
-                </tr>`;
-    });
-    tbody.innerHTML = rows;
-  }
-
-  searchBtn.addEventListener("click", function () {
-    const keyword = searchInput.value.toLowerCase();
-    const filtered = allUsers.filter((user) => {
-      const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-      return (
-        fullName.includes(keyword) || user.phone.toLowerCase().includes(keyword)
-      );
-    });
-    renderTable(filtered);
-  });
-
+  // ----------------------------------- Pass Data (Dummy)-------- ------------------------------------
   function fetchPassesData() {
     passesTableBody.innerHTML = `<tr><td colspan="7">Loading...</td></tr>`;
     const totalLimit = 200;
     const chunkSize = 100;
     const fetchPromises = [];
 
-
     for (let skip = 0; skip < totalLimit; skip += chunkSize) {
-      const url = `https://dummyjson.com/users?limit=${chunkSize}&skip=${skip}`; 
+      const url = `https://dummyjson.com/users?limit=${chunkSize}&skip=${skip}`;
       fetchPromises.push(fetch(url).then((res) => res.json()));
     }
 
@@ -194,8 +478,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
         renderPasses(allPassesData);
       })
-      .catch(() => {
-        passesTableBody.innerHTML = `<tr><td colspan="7">Error loading passes data.</td></tr>`;
+      .catch((error) => {
+        console.error("Error fetching passes data from dummyjson:", error);
+        passesTableBody.innerHTML = `<tr><td colspan="7" class="error-text">Error loading passes data. Please check dummy API or network.</td></tr>`;
       });
   }
 
@@ -224,7 +509,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td><button class="update-btn" onclick="openPassModal(true, this.parentElement.parentElement)"><i class="fas fa-pen"></i> Update</button></td>
                 </tr>`;
     });
-
     passesTableBody.innerHTML = rows;
   }
 
@@ -262,7 +546,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function getDaySuffix(day) {
-    if (day >= 11 && day <= 13) return "th";
+    if (day > 3 && day < 21) return "th";
     switch (day % 10) {
       case 1:
         return "st";
@@ -287,9 +571,10 @@ document.addEventListener("DOMContentLoaded", function () {
     renderPasses(filteredData);
   });
 
+  // --- Pass Modal Logic ---
   window.openPassModal = function (isEdit = false, row = null) {
     const modal = document.getElementById("pass-modal");
-    modal.style.display = "block";
+    modal.style.display = "flex";
     document.getElementById("pass-modal-title").textContent = isEdit
       ? "Update Pass"
       : "Add New Pass";
@@ -302,11 +587,14 @@ document.addEventListener("DOMContentLoaded", function () {
       inputs[1].value = cells[1].textContent;
       inputs[2].value = cells[2].textContent;
       inputs[3].value = cells[3].textContent;
-      inputs[4].value = new Date(
-        cells[4].textContent.split(" ").slice(2).join(" ")
-      )
-        .toISOString()
-        .split("T")[0];
+      const expiryString = cells[4].textContent.split(" ").slice(2).join(" ");
+      const parsedDate = new Date(expiryString);
+      if (!isNaN(parsedDate)) {
+        inputs[4].value = parsedDate.toISOString().split("T")[0];
+      } else {
+        console.warn("Could not parse expiry date:", expiryString);
+        inputs[4].value = "";
+      }
       inputs[5].value = cells[5].textContent;
     }
   };
@@ -319,8 +607,7 @@ document.addEventListener("DOMContentLoaded", function () {
     closePassModal();
   };
 
-  // -----------------------------------------tag data ----------------------------------
-
+  // -----------------------------------------Tag Data (Dummy) -----------------------------------------
   window.openTagModal = function (isEdit = false, row = null) {
     const modal = document.getElementById("tag-modal");
     modal.style.display = "flex";
@@ -372,6 +659,9 @@ document.addEventListener("DOMContentLoaded", function () {
       editingTagRow.innerHTML = rowHTML;
     } else {
       const tbody = document.getElementById("tag-table-body");
+      if (tbody.querySelector(".no-results")) {
+        tbody.innerHTML = "";
+      }
       const newRow = document.createElement("tr");
       newRow.innerHTML = rowHTML;
       tbody.appendChild(newRow);
@@ -379,36 +669,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
     closeTagModal();
   };
-  // ------------------------------------  hardwareData Reports-----------------------------------------------------
 
+  // ------------------------------------ Hardware Data (Dummy) -----------------------------------------------------
   function populateHardwareTable() {
     const hardwareData = [
       {
         name: "Camera 1",
         type: "CCTV",
         status: "Online",
-        lastCheckIn: "2025-07-17 09:00 AM",
+        lastCheckIn: "2025-07-26 09:00 AM",
         location: "Entry Gate A",
       },
       {
         name: "Barrier Gate 1",
         type: "Barrier",
         status: "Online",
-        lastCheckIn: "2025-07-17 09:05 AM",
+        lastCheckIn: "2025-07-26 09:05 AM",
         location: "Entry Gate A",
       },
       {
         name: "POS Machine 1",
         type: "POS",
         status: "Offline",
-        lastCheckIn: "2025-07-15 04:12 PM",
+        lastCheckIn: "2025-07-24 04:12 PM",
         location: "Cashier Booth 1",
       },
       {
         name: "Sensor 2",
         type: "Sensor",
         status: "Online",
-        lastCheckIn: "2025-07-17 09:10 AM",
+        lastCheckIn: "2025-07-26 09:10 AM",
         location: "Exit Gate B",
       },
     ];
@@ -432,70 +722,97 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  showSection(welcomeMessageContent);
-});
+  // ------------------------------------ Image  zom -----------------
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const captionText = document.getElementById("caption");
+  const closeButton = document.querySelector(".close-button");
 
-// --------------------------------report data--------------------------------------
-
-function generateReport() {
-  const resultDiv = document.querySelector(".reports-result");
-  resultDiv.innerHTML = "<p><strong>Report generated!</strong></p>";
-}
-
-const reportData = [
-  { date: "2025-07-15", summary: "50 Entries, " },
-  { date: "2025-07-16", summary: "80 Entries, " },
-  { date: "2025-07-17", summary: "150 Entries, " },
-  { date: "2025-07-18", summary: "90 Entries, " },
-  { date: "2025-07-19", summary: "110 Entries, " },
-];
-
-function loadReportsData() {
-  const reportsTableBody = document.getElementById("reports-table-body");
-  reportsTableBody.innerHTML = "";
-
-  if (reportData.length === 0) {
-    reportsTableBody.innerHTML =
-      '<tr><td colspan="2" class="no-results">No report data available.</td></tr>';
-    return;
+  function setupImageClickListeners(containerElement) {
+    const images = containerElement.querySelectorAll(".clickable-image");
+    images.forEach((img) => {
+      img.removeEventListener("click", handleImageClick);
+      img.addEventListener("click", handleImageClick);
+    });
   }
 
-  reportData.forEach((report) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-            <td>${report.date}</td>
-            <td>${report.summary}</td>
-        `;
-    reportsTableBody.appendChild(row);
-  });
-}
-
-// ----------------------------------- click image and show large image logic ----------------------------
-
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-const captionText = document.getElementById("caption");
-const closeButton = document.querySelector(".close-button");
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  const images = document.querySelectorAll(".clickable-image");
-  images.forEach((img) => {
-    img.addEventListener("click", function () {
+  function handleImageClick() {
+    if (lightbox && lightboxImg && captionText) {
       lightbox.style.display = "flex";
       lightboxImg.src = this.src;
-      captionText.innerHTML = this.alt;
-    });
-  });
-
-  closeButton.addEventListener("click", function () {
-    lightbox.style.display = "none";
-  });
-
-  lightbox.addEventListener("click", function (event) {
-    if (event.target === lightbox) {
-      lightbox.style.display = "none";
+      captionText.innerHTML = this.alt || "Image";
     }
-  });
+  }
+
+  if (lightbox && closeButton) {
+    closeButton.addEventListener("click", function () {
+      lightbox.style.display = "none";
+    });
+
+    lightbox.addEventListener("click", function (event) {
+      if (event.target === lightbox) {
+        lightbox.style.display = "none";
+      }
+    });
+  }
+
+  const lastActiveSectionId = localStorage.getItem("lastActiveSection");
+  let initialSectionElement = welcomeMessageContent;
+
+  if (lastActiveSectionId) {
+    const foundSection = document.getElementById(lastActiveSectionId);
+    if (foundSection) {
+      initialSectionElement = foundSection;
+
+      navItems.forEach((item) => {
+        const link = item.querySelector("a");
+        if (!link) return;
+
+        if (
+          link.id === "dashboard-link" &&
+          lastActiveSectionId === "dashboard-content"
+        ) {
+          item.classList.add("active");
+        } else if (
+          link.id === "activities-link" &&
+          lastActiveSectionId === "activities-section"
+        ) {
+          item.classList.add("active");
+        } else if (
+          link.id === "hardware-link" &&
+          lastActiveSectionId === "hardware-section"
+        ) {
+          item.classList.add("active");
+        } else if (
+          link.id === "passes-link" &&
+          lastActiveSectionId === "manual-passes-section"
+        ) {
+          item.classList.add("active");
+        } else if (
+          link.id === "tags-link" &&
+          lastActiveSectionId === "tag-section"
+        ) {
+          item.classList.add("active");
+        } else if (
+          link.id === "reports-link" &&
+          lastActiveSectionId === "reports-section"
+        ) {
+          item.classList.add("active");
+        }
+      });
+    }
+  }
+  showSection(initialSectionElement);
+
+  if (initialSectionElement === activitiesSection) {
+    fetchAndDisplayActivityData();
+  } else if (initialSectionElement === hardwareSection) {
+    populateHardwareTable();
+  } else if (initialSectionElement === passesSection) {
+    fetchPassesData();
+  } else if (initialSectionElement === reportsSection) {
+    loadReportsData();
+  }
+
+  setupImageClickListeners(document);
 });

@@ -23,8 +23,10 @@
   box-sizing: border-box;
 }
 body {
-  font-family: Arial, sans-serif;
-  /* background-color: #f9f9f9; */
+     font-family: 'Poppins', Arial, sans-serif;
+    background-color: white;
+    color: var(--text-color);
+    overflow: hidden;
 }
 
 /* Header */
@@ -205,7 +207,6 @@ body {
 
 /* ---------------------------- Dashboard Header & ----------------------------------------------------- --- */
 
-/* Dashboard Header */
 .dashboard-header {
     display: flex;
     justify-content: space-between;
@@ -232,7 +233,7 @@ body {
     margin-right: 8px;
 }
 
-/* Section Headings */
+/* ------------------------------------Section Headings---------------------------------- */
 .fastag-summary-section h2,
 .pos-summary-section h2,
 .total-collection-section h2 {
@@ -242,7 +243,23 @@ body {
     color: var(--text-color);
 }
 
-/* Generic Table Styles (Used for Fastag and Total Vehicles) */
+
+h2, h3 {
+    color: #2c3e50;
+    /* text-align: center; */
+    margin-bottom: 25px;
+}
+
+
+
+
+.fa-rupee-sign {
+    color: #28a745; 
+    margin-right: 5px;
+}
+
+
+
 .fastag-table-container,
 .total-vehicles-inside-table-container {
     background-color: var(--card-background);
@@ -250,7 +267,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     margin-bottom: 20px;
-    overflow-x: auto; /* For responsiveness on small screens */
+    overflow-x: auto; 
 }
 
 .fastag-table-container table,
@@ -1063,6 +1080,8 @@ p {
 }
 /* ------------------------------------------Modal Background------------------------------------------- */
 
+
+
 .modal {
   position: fixed;
   top: 0;
@@ -1435,3 +1454,256 @@ p {
     object-fit: cover; 
     border-radius: 50%;
 }
+/* --------------------- */
+
+
+/* --- Professional Activity Table Styling ----------------------------------- */
+
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.9em;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    position: relative;
+    /* Change height to 100% */
+    height: 100%; 
+    overflow-y: auto;
+    display: block;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+.activity-table thead {
+    background-color: #f0f2f5;
+    color: #333;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.activity-table th,
+.activity-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.activity-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.activity-table tbody {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.activity-table tbody tr:hover {
+    background-color: #f0f6ff;
+    cursor: pointer;
+}
+
+.activity-table .event-type-entry {
+    background-color: #e6ffe6;
+    color: #28a745;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.activity-table .event-type-exit {
+    background-color: #ffe6e6;
+    color: #dc3545;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.activity-table .event-type-denial {
+    background-color: #fff3cd;
+    color: #ffc107;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.activity-table .event-type-n\/a {
+    background-color: #f2f2f2;
+    color: #6c757d;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .activity-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        height: auto;
+        overflow-y: visible;
+    }
+
+    .activity-table thead {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        display: block;
+        width: auto;
+    }
+
+    .activity-table tbody {
+        display: block;
+        width: auto;
+    }
+
+    .activity-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
+
+    .activity-table td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+
+    .activity-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .activity-table {
+        
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        height: auto; 
+        overflow-y: visible; 
+    }
+
+    .activity-table thead {
+  
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+        display: block; 
+        width: auto; 
+    }
+
+    .activity-table tbody {
+        display: block; 
+        width: auto;
+    }
+
+    .activity-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
+
+    .activity-table td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+        text-align: right;
+    }
+
+    .activity-table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+    }
+}
+
+/* --- ---------------------------------Activity Filter and Search Bar Styling ---------------------------- */
+
+.activity-filters {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px; 
+    margin-bottom: 20px;
+    align-items: flex-end; 
+}
+
+.activity-filters .filter-group {
+    /* flex: 1;  */
+    /* min-width: 200px;  */
+}
+
+.activity-filters label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.activity-filters .form-control { 
+    /* width: 100%; */
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; 
+}
+
+.activity-filters .search-group {
+    display: flex;
+    gap: 10px;
+    
+}
+
+.activity-filters .search-group input {
+    flex-grow: 1;
+}
+
+.activity-filters .btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.activity-filters .btn-primary {
+    background-color: #007bff; 
+    color: white;
+}
+
+
+@media (max-width: 600px) {
+    .activity-filters {
+        flex-direction: column; 
+        align-items: stretch;
+    }
+    .activity-filters .filter-group,
+    .activity-filters .search-group {
+        width: 100%;
+        min-width: unset;
+    }
+}
+
