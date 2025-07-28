@@ -1767,22 +1767,20 @@ p {
 
 
 
-/* Lightbox Container */
 .lightbox {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    padding: 20px; /* Reduced padding as grid will take more space */
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    padding: 20px;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow-y: auto; /* Enable vertical scroll if grid overflows */
-    background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
-    box-sizing: border-box; /* Include padding in width/height */
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    box-sizing: border-box;
 }
 
-/* Close Button */
 .close-button {
     position: absolute;
     top: 15px;
@@ -1792,7 +1790,7 @@ p {
     font-weight: bold;
     transition: 0.3s;
     cursor: pointer;
-    z-index: 1001; /* Ensure it's above the grid */
+    z-index: 1001; 
 }
 
 .close-button:hover,
@@ -1802,33 +1800,32 @@ p {
     cursor: pointer;
 }
 
-/* NEW: Grid Container for Images */
+/* /-----------------------------Grid Container for Images--------------------------- */
 .lightbox-grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
-    gap: 15px; /* Space between images */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 15px; 
     padding: 20px;
-    margin: 0 auto; /* Center the grid */
-    max-width: 1200px; /* Max width for the grid */
-    align-items: start; /* Align items to the start of their cells */
+    margin: 0 auto; 
+    max-width: 1200px; 
+    align-items: start; 
 }
 
 .lightbox-grid-container img {
-    width: 100%; /* Make image fill its grid cell */
-    height: 200px; /* Fixed height for consistency, adjust as needed */
-    object-fit: cover; /* Crop image to fit without distortion */
-    border-radius: 8px; /* Slightly rounded corners */
-    cursor: pointer; /* Indicate it's clickable (if you want to open individual image on click from grid) */
+    width: 100%; 
+    height: 200px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+    cursor: pointer; 
     transition: transform 0.3s ease-in-out;
-    border: 2px solid transparent; /* For hover effect */
+    border: 2px solid transparent; 
 }
 
 .lightbox-grid-container img:hover {
-    transform: scale(1.03); /* Slight zoom on hover */
-    border: 2px solid #007bff; /* Highlight on hover */
+    transform: scale(1.03);
+    border: 2px solid #007bff; 
 }
 
-/* Caption for the overall grid, or for individual images if re-implemented */
 #caption {
     margin: 20px auto;
     display: block;
@@ -1839,17 +1836,6 @@ p {
     padding: 10px 0;
 }
 
-/* Remove or comment out old slide-show specific styles */
-/*
-.lightbox-content {
-    // ... (old styles, can remove)
-}
-.prev, .next {
-    // ... (old styles, can remove)
-}
-*/
-
-/* Small images in tables (unchanged) */
 .activity-table-image.clickable-image,
 .small-table-image.clickable-image {
     cursor: pointer;
