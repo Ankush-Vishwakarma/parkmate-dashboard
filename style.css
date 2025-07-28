@@ -1707,3 +1707,156 @@ p {
     }
 }
 
+
+
+/* -------------------------------------- show all image ------------------------------- */
+
+.image-with-count-cell {
+    position: relative; 
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    padding: 5px; 
+    min-width: 80px; 
+    height: 60px;
+}
+
+.image-with-count-cell img.small-table-image {
+    display: block; 
+    width: 50px; 
+    height: 50px; 
+    object-fit: cover; 
+    border-radius: 5px; 
+}
+
+.image-count-overlay {
+    position: absolute; 
+    top: 50%;
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    font-weight: bold;
+    color: #fff; 
+    font-size: 1.1em; 
+    background-color: rgba(0, 0, 0, 0.4); 
+    padding: 2px 8px; 
+    border-radius: 5px; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); 
+    z-index: 10; 
+}
+
+.fastag-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.fastag-table-container th,
+.fastag-table-container td {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .image-with-count-cell {
+        min-width: unset;
+        height: 60px; 
+    }
+}
+
+
+
+/* Lightbox Container */
+.lightbox {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    padding: 20px; /* Reduced padding as grid will take more space */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow-y: auto; /* Enable vertical scroll if grid overflows */
+    background-color: rgba(0, 0, 0, 0.9); /* Black w/ opacity */
+    box-sizing: border-box; /* Include padding in width/height */
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 1001; /* Ensure it's above the grid */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* NEW: Grid Container for Images */
+.lightbox-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 15px; /* Space between images */
+    padding: 20px;
+    margin: 0 auto; /* Center the grid */
+    max-width: 1200px; /* Max width for the grid */
+    align-items: start; /* Align items to the start of their cells */
+}
+
+.lightbox-grid-container img {
+    width: 100%; /* Make image fill its grid cell */
+    height: 200px; /* Fixed height for consistency, adjust as needed */
+    object-fit: cover; /* Crop image to fit without distortion */
+    border-radius: 8px; /* Slightly rounded corners */
+    cursor: pointer; /* Indicate it's clickable (if you want to open individual image on click from grid) */
+    transition: transform 0.3s ease-in-out;
+    border: 2px solid transparent; /* For hover effect */
+}
+
+.lightbox-grid-container img:hover {
+    transform: scale(1.03); /* Slight zoom on hover */
+    border: 2px solid #007bff; /* Highlight on hover */
+}
+
+/* Caption for the overall grid, or for individual images if re-implemented */
+#caption {
+    margin: 20px auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+}
+
+/* Remove or comment out old slide-show specific styles */
+/*
+.lightbox-content {
+    // ... (old styles, can remove)
+}
+.prev, .next {
+    // ... (old styles, can remove)
+}
+*/
+
+/* Small images in tables (unchanged) */
+.activity-table-image.clickable-image,
+.small-table-image.clickable-image {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.activity-table-image.clickable-image:hover,
+.small-table-image.clickable-image:hover {
+    transform: scale(1.05);
+}
