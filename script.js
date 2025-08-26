@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sectionElement.style.display = "block";
   }
 
+  
   function setActiveLink(linkElement) {
     document.querySelectorAll(".sidebar-nav-item").forEach((item) => {
       item.classList.remove("active");
@@ -131,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
       logout();
     });
   }
-  
 
   // ---------------------------------Activities Functions----------------------------------
   function setupActivitiesSection() {
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activitiesSection.innerHTML = `
         <div id="activity-section-content">
-            <h2 id="activity-count-title">Activities</h2>
+            <h2 id="activity-count-title"> ASA Electra Activities </h2>
             <p style="margin-bottom: 20px;">Showing activities of ${today}</p>
             <p class="section-description">View and filter all vehicle entries, exits, and transactions. Use the filters below to find specific records.</p>
             <div class="activity-filters">
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     dataContainerEl.innerHTML = "";
     const activityCountEl = document.getElementById("activity-count-title");
     if (activityCountEl) {
-      activityCountEl.textContent = `Activities (Loading...)`;
+      activityCountEl.textContent = `  ASA Electra Activities (Loading...)`;
     }
 
     let filteredActivities = [];
@@ -314,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const activityCountEl = document.getElementById("activity-count-title");
       if (activityCountEl) {
         const displayCount = filteredActivities.length;
-        activityCountEl.textContent = `Activities (${displayCount})`;
+        activityCountEl.textContent = ` ASA Electra Activities (${displayCount})`;
       }
     }
   }
@@ -877,7 +877,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initializeApp();
 
-  // ============================= Passes Start ================================
+  // ------------------------------Passes Start ------------------------------------------
+
+  
   const setupPassesPage = () => {
     const passesSection = document.getElementById("manual-passes-section");
     if (!passesSection) {
@@ -1087,7 +1089,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      passesCountTitle.textContent = "Pass Dashboard (Loading...)";
+      passesCountTitle.textContent = " ASA ElectraPass Dashboard (Loading...)";
       passesContainer.innerHTML = "";
       try {
         const accessToken = localStorage.getItem("access_token");

@@ -1112,7 +1112,7 @@ body {
 }
 
 .reports-table th {
-    padding: 15px 20px; 
+    padding: 8px 20px; 
     font-weight: 600;
     border-bottom: 1px solid #dee2e6; 
     white-space: nowrap; 
@@ -1836,7 +1836,7 @@ form input[type="checkbox"] {
 #passes-table table thead {
     position: sticky;
     top: 0;
-    background-color: #f0f0f0;
+    background-color: #d8d9db;
     z-index: 10;
 }
 
@@ -2139,6 +2139,7 @@ input:checked + .slider:before {
 .activity-table tr:hover {
     background-color: #f1f1f1;
 }
+
 
 .activity-table .update-btn {
     background-color: #2196F3;
