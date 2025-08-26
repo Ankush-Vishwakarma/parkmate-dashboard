@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ---------------------------------Activities Functions----------------------------------
+  // ---------------------------------Activities Functions-------------------------------------------------
   function setupActivitiesSection() {
     const today = new Date().toLocaleDateString("en-US", {
       year: "numeric",
@@ -664,7 +664,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // --- -----------------------Lightbox & Image Functions--------------------------- ---
+  // --- -----------------------Lightbox & Image Functions --------------------------- ---
+
   function setupImageClickListeners(container) {
     const images = container.querySelectorAll(".clickable-image");
     images.forEach((img) => {
@@ -1339,6 +1340,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ============================= Passes End ================================
 
+
+  
   // ============================= Tags Start ================================
 
   // ----------------------------------------- Authentication Start -------------------------------
